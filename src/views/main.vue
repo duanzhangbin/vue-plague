@@ -96,7 +96,7 @@
             <el-form-item label="返厂方式" prop="transport">
             </el-form-item>
             <el-radio-group v-model="ruleForm.transport">
-                <el-radio label="自驾"></el-radio>
+                <el-radio label="自驾(含搭车)"></el-radio>
                 <el-radio label="公共交通"></el-radio>
             </el-radio-group>
             <el-form-item label="备注" prop="remark">
@@ -104,7 +104,7 @@
             <el-input type="textarea" v-model="ruleForm.remark"></el-input>
             <el-form-item label="填写日期" prop="fillDate">
             </el-form-item>
-            <el-date-picker type="date" placeholder="选择填写日期" v-model="ruleForm.fillDate" value-format="yyyy-MM-dd" style="width: 100%;"></el-date-picker>
+            <el-date-picker type="date" placeholder="选择填写日期" value-format="yyyy-MM-dd" v-model="ruleForm.fillDate" style="width: 100%;"></el-date-picker>
             <el-form-item></el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
             <el-button @click="resetForm('ruleForm')">重置</el-button>
@@ -118,6 +118,12 @@
     export default {
         name: "main",
         data() {
+            let checkReturnDate = (rule, value, callback) => {
+                if (value < this.ruleForm.fillDate) {
+                    return callback(new Error('返厂日期不得晚于当前日期！'))
+                }
+                callback();
+            };
             return {
                 ruleForm: {
                     workCode: '',
@@ -139,7 +145,7 @@
                     returnDate: '',
                     transport: '',
                     remark: '',
-                    fillDate: new Date(),
+                    fillDate: this.formatDate(new Date()),
                 },
                 rules: {
                     workCode: [
@@ -165,7 +171,8 @@
                         { required: true, message: '请选择身体是否异常', trigger: 'change' }
                     ],
                     returnDate: [
-                        { required: true, message: '请选择返厂日期', trigger: 'change' }
+                        { required: true, message: '请选择返厂日期', trigger: 'change' },
+                        { validator: checkReturnDate, trigger: "change"}
                     ],
                     transport: [
                         { required: true, message: '请选择返厂方式', trigger: 'change' }
@@ -229,7 +236,7 @@
                 clearTimeout(this.timeout);
                 this.timeout = setTimeout(() => {
                     cb(results);
-                }, 3000 * Math.random());
+                }, 1500 * Math.random());
             },
             createStateFilter(queryString) {
                 return (state) => {
@@ -249,10 +256,18 @@
             },
             formatData() {
                 this.ruleForm.workCode = this.ruleForm.workCode.toUpperCase();
+            },
+            formatDate(formatDate) {
+                let y = formatDate.getFullYear();
+                let m = formatDate.getMonth() + 1;
+                m = m < 10 ? '0' + m : m;
+                let d = formatDate.getDate();
+                d = d < 10 ? ('0' + d) : d;
+                return y + '-' + m + '-' + d;
             }
         },
         created() {
-            document.title = '大丰防疫信息登记系统';
+            document.title = '大丰防疫信息系统';
             this.regionOptions = this.$store.state.regions;
             this.$http.get('/getUserInfos').then(({ data }) => {
                 this.users = data.list;

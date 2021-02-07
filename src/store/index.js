@@ -2948,9 +2948,6 @@ const store = new Vuex.Store({
                     "label": "海曙区",
                     "value": "海曙区"
                 }, {
-                    "label": "江东区",
-                    "value": "江东区"
-                }, {
                     "label": "江北区",
                     "value": "江北区"
                 }, {
@@ -2975,8 +2972,8 @@ const store = new Vuex.Store({
                     "label": "慈溪市",
                     "value": "慈溪市"
                 }, {
-                    "label": "奉化市",
-                    "value": "奉化市"
+                    "label": "奉化区",
+                    "value": "奉化区"
                 }],
                 "label": "宁波市",
                 "value": "宁波市"
@@ -11661,7 +11658,7 @@ const store = new Vuex.Store({
             "children": [],
             "label": "钓鱼岛",
             "value": "钓鱼岛"
-        }]
+        }],
     },
 
     mutations: {

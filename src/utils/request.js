@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const http = axios.create({
     //baseURL: 'http://localhost:8086/',
-    //baseURL: 'http://192.168.101.69:93/dfapi/',
+    //baseURL: 'http://192.168.101.69:98/dfapi/',
     baseURL: 'https://tools.chinadafeng.com:98/dfapi/',
     timeout: 1000 * 30,
     headers: {
