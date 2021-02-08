@@ -27,6 +27,7 @@
             <el-form-item label="籍贯" prop="regionChoose">
             </el-form-item>
             <el-cascader
+                    v-if="isShowInfo"
                     v-model="ruleForm.regionChoose"
                     :options="regionOptions"
                     @change="regionChange" style="width: 100%"></el-cascader>
@@ -40,6 +41,7 @@
                 <el-form-item label="过年所在地" prop="livePlaceChoose" >
                 </el-form-item>
                 <el-cascader
+                        v-if="isShowInfo"
                         v-model="ruleForm.livePlaceChoose"
                         :options="regionOptions"
                         @change="livePlaceChange" style="width: 100%"></el-cascader>
@@ -188,6 +190,7 @@
                 users: [],
                 state: '',
                 timeout:  null,
+                isShowInfo: true,
             };
         },
         methods: {
@@ -247,6 +250,80 @@
                 this.ruleForm.name = item.name;
                 this.ruleForm.depart = item.depart;
                 this.ruleForm.mobile = item.mobile;
+                this.$http.get('getDataInfos', {
+                    params: {
+                        workCode: item.value
+                    }
+                }).then(({ data }) => {
+                    let record = data.list;
+                    if (record) {
+                        //籍贯
+                        if (record.region) {
+                            this.ruleForm.region = record.region;
+                            for(const item in record.region.split("-")){
+                                this.ruleForm.regionChoose.push(record.region.split("-")[item]);
+                            }
+                        }
+                        //过年地与籍贯是否一致
+                        if (record.regionState) {
+                            this.ruleForm.regionState = record.regionState;
+                        }
+                        //过年所在地
+                        if (record.livePlace) {
+                            this.ruleForm.livePlace = record.livePlace;
+                            for(const item in record.livePlace.split("-")){
+                                this.ruleForm.livePlaceChoose.push(record.livePlace.split("-")[item]);
+                            }
+                        }
+                        //假期行程
+                        if (record.travelPlan) {
+                            this.ruleForm.travelPlan = record.travelPlan;
+                        }
+                        //是否途径中高风险地区
+                        if (record.highRiskAreaPass){
+                            this.ruleForm.highRiskAreaPass = record.highRiskAreaPass;
+                        }
+                        //身体状态
+                        if (record.status){
+                            this.ruleForm.status = record.status;
+                        }
+                        //身体状态
+                        if (record.health){
+                            this.ruleForm.health = record.health;
+                            for(const item in record.health.split("-")){
+                                this.ruleForm.healthGroup.push(record.health.split("-")[item]);
+                            }
+                        }
+                        //是否接触过中高风险人员
+                        if (record.isHighPass){
+                            this.ruleForm.isHighPass = record.isHighPass;
+                        }
+                        //是否居家观察隔离
+                        if (record.isolation){
+                            this.ruleForm.isolation = record.isolation;
+                        }
+                        //返厂日期
+                        if (record.returnDate){
+                            this.ruleForm.returnDate = record.returnDate;
+                        }
+                        //返厂方式
+                        if (record.transport){
+                            this.ruleForm.transport = record.transport;
+                        }
+                        //备注
+                        if (record.remark){
+                            this.ruleForm.remark = record.remark;
+                        }
+                    }
+                    this.isShowInfo = false;
+                    setTimeout(() => {
+                        this.isShowInfo = true;
+                    }, 100);
+                    console.log(data.list);
+                    console.log(this.ruleForm);
+                }).catch(({ error}) => {
+                    alert('网络请求发生错误！' + error)
+                });
             },
             handleHealth(val) {
                 this.ruleForm.health = val.join("-");
