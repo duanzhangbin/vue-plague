@@ -333,6 +333,14 @@
             },
             formatData() {
                 this.ruleForm.workCode = this.ruleForm.workCode.toUpperCase();
+                if (this.ruleForm.travelPlan == '在家') {
+                    this.ruleForm.highRiskAreaPass = '';
+                }
+                if (this.ruleForm.status == '正常'){
+                    this.ruleForm.health = '';
+                    this.ruleForm.isHighPass = '';
+                    this.ruleForm.isolation = '';
+                }
             },
             formatDate(formatDate) {
                 let y = formatDate.getFullYear();
@@ -341,7 +349,7 @@
                 let d = formatDate.getDate();
                 d = d < 10 ? ('0' + d) : d;
                 return y + '-' + m + '-' + d;
-            }
+            },
         },
         created() {
             document.title = '大丰防疫信息系统';
